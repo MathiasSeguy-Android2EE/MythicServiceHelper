@@ -81,7 +81,18 @@ public class ConstantData implements Parcelable {
 		boolean[] toto = new boolean[] { boleen };
 		dest.writeBooleanArray(toto);
 	}
-
+	/**
+	 * Needed constructor
+	 * @param in
+	 */
+	private ConstantData(Parcel in) {
+		message = in.readString();
+		message = in.readString();
+		entier = in.readInt();
+		boolean[] toto = new boolean[] { boleen };
+		in.readBooleanArray(toto);
+		boleen = toto[0];
+	}
 	
 	/**
 	 * Needed creator
@@ -97,16 +108,5 @@ public class ConstantData implements Parcelable {
 	};
 
 	
-	/**
-	 * Needed constructor
-	 * @param in
-	 */
-	private ConstantData(Parcel in) {
-		message = in.readString();
-		message = in.readString();
-		entier = in.readInt();
-		boolean[] toto = new boolean[] { boleen };
-		in.readBooleanArray(toto);
-		boleen = toto[0];
-	}
+	
 }

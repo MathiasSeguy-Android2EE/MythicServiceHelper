@@ -38,28 +38,42 @@ import android.util.Log;
 /**
  * @author Mathias Seguy (Android2EE)
  * @goals
- * This class aims to:
- * <ul><li></li></ul>
+ *        This class aims to declare MService.
+ *        MService are business and Android service (All your business services have to be Android
+ *        services)
+ *        Your business service have to inherits this class
  */
 public class MService extends Service {
 	/******************************************************************************************/
-	/** Generic **************************************************************************/
+	/** The binder process **************************************************************************/
 	/******************************************************************************************/
+	/**
+	 * The Binder
+	 */
+	private final Binder binder = new LocalBinder();
 
-	private final Binder binder=new LocalBinder();
+	/**
+	 * @author Mathias Seguy (Android2EE)
+	 * @goals
+	 *        This class aims to be a local Binder that keep and share a pointer on the instance of
+	 *        this
+	 */
 	public class LocalBinder extends Binder {
+		// as usual
 		public MService getService() {
-			Log.e("MService","LocalBinder:getService(), serv: "+MService.this);
-			return MService.this;}
+			// return the instance of the service
+			Log.v("MService", "LocalBinder:getService(), serv: " + MService.this);
+			return MService.this;
+		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see android.app.Service#onBind(android.content.Intent)
 	 */
 	@Override
 	public IBinder onBind(Intent intent) {
 		return binder;
 	}
-
 
 }

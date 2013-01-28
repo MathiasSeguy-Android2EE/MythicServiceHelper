@@ -22,7 +22,7 @@
  * *****************************************
  * ************************************************************************</br>
  */
-package com.android2ee.formation.service.helper1.generic.shelper;
+package com.android2ee.formation.service.helper1.service.loader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,87 +34,104 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.android2ee.formation.service.helper1.MAppInstance;
-import com.android2ee.formation.service.helper1.generic.MActivity;
+import com.android2ee.formation.service.helper1.generic.MAppInstance;
 import com.android2ee.formation.service.helper1.generic.MService;
+import com.android2ee.formation.service.helper1.generic.shelper.OnServiceCallBack;
 import com.android2ee.formation.service.helper1.service.services.DummyService;
 
 /**
  * @author Mathias Seguy (Android2EE)
  * @goals
- * This class aims to:
- * <ul><li></li></ul>
+ *        This class aims to lazy load the services and keep a reference on them avoiding
+ *        destruction/recreation of services when activities die/recreate<br/>
+ *        You need to declare in it all the services you want the Activities reach.
+ *        You need to declare them the way dummyService is.
+ *        Use the eclipse template to generate the code for your service
+ *        (MSH_SL)
  */
-public enum ServiceLoader{
-	
-	instance;
+public enum ServiceLoader {
 
+	/**
+	 * The instance of the ServiceLoader
+	 */
+	instance;
+	
+	/***************************************/
+	/**Use the template XXXX to generate code ****************/
+	/******************************************/
 	/******************************************************************************************/
 	/** DummyService Accessors **************************************************************************/
 	/******************************************************************************************/
-
+	//TODO MSE do a template for the creation and declaration of such a service
 	/**
-	 * 
+	 * The service you want to expose to activities
 	 */
 	private DummyService dService = null;
+	/**
+	 * The list of the callback of the service instantiation
+	 */
+	private List<OnServiceCallBack> onDServiceCallBack;
 
 	/**
-	 * @param name
-	 * @param ordinal
+	 * Method to start the DummyService service
 	 */
-	ServiceLoader() {
-		//should start service here
-		//or add callBack to activity when first calling it
-		//it's fucking not lazy loading this way
-//		startDummySrv();
-		onDServiceCallBack=new ArrayList<OnServiceCallBack>();
-	}
-
-	/**
-	 * @param activity
-	 */
-	public void startDummySrv() {
+	private void startDummySrv() {
+		//insure the list is not null
+		if(onDServiceCallBack==null) {
+			onDServiceCallBack = new ArrayList<OnServiceCallBack>();
+		}
+		//if the service is null, launch it using the Bind process
 		if (dService == null) {
-			Log.e("ServiceLoader","startDummySrv, called: "+dService);
+			Log.v("ServiceLoader", "startDummySrv, called: " + dService);
 			Intent service = new Intent(MAppInstance.ins.getApplication(), DummyService.class);
 			MAppInstance.ins.getApplication().bindService(service, dummySrvConn, Service.START_STICKY);
 		}
 
-	}
-	List<OnServiceCallBack> onDServiceCallBack;
+	}	
+
 	/**
+	 * The method to be called by the activities 
 	 * @return the dService (could be null if not started yet)
 	 */
-	public void  getdService(OnServiceCallBack onServiceCallBack) {
+	public void getdService(OnServiceCallBack onServiceCallBack) {
 		//I should add activity to the listener of intent with action activityId
-		startDummySrv() ;
-		Log.e("ServiceLoader","startDummySrv, called: "+dService);
-		if(dService == null) {
+		//insure the service is started
+		startDummySrv();
+		//then if the service is null add the callBack to the list of elements waiting for the service to be instantiated
+		Log.v("ServiceLoader", "startDummySrv, called: " + dService);
+		if (dService == null) {
+			//add to the callback list
 			onDServiceCallBack.add(onServiceCallBack);
-		}else {
+		} else {
+			//else, service is not null, just use directly the callback
 			onServiceCallBack.onServiceCallBack(dService);
 		}
 	}
 
 	/**
-	 * 
+	 * The object to handle the connection of this with the  service.
+	 * So this will keep a pointer on the service not loosing it in the memory.
 	 */
-	ServiceConnection dummySrvConn = new ServiceConnection() {
+	private ServiceConnection dummySrvConn = new ServiceConnection() {
+		//as usual deconnection
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			dService = null;
 		}
-
+		//as usual connection
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			
+			//use the IBinder
 			dService = (DummyService) ((MService.LocalBinder) service).getService();
-			Log.e("ServiceLoader","dummySrvConn:onServiceConnected, dServ: "+dService);
-			for(OnServiceCallBack callBack:onDServiceCallBack) {
-				Log.e("ServiceLoader","dummySrvConn:onServiceConnected, callBack: "+callBack);
+			Log.v("ServiceLoader", "dummySrvConn:onServiceConnected, dServ: " + dService);
+			//notify callback the service is awake
+			for (OnServiceCallBack callBack : onDServiceCallBack) {
+				Log.v("ServiceLoader", "dummySrvConn:onServiceConnected, callBack: " + callBack);
 				callBack.onServiceCallBack(dService);
 			}
-			
+			//and clear the list
+			onDServiceCallBack.clear();
+			onDServiceCallBack=null;
 		}
 	};
 

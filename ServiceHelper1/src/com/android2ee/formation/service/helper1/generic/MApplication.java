@@ -27,25 +27,35 @@
  *  <em>http://mathias-seguy.developpez.com/</em></br> </br>
  * *****************************************************************************************************************</br>
  */
-package com.android2ee.formation.service.helper1;
+package com.android2ee.formation.service.helper1.generic;
 
+import android.app.Application;
+
+import com.android2ee.formation.service.helper1.service.loader.ServiceLoader;
 
 /**
  * @author Mathias Seguy (Android2EE)
  * @goals
- * This class aims to:
- * <ul><li></li></ul>
+ *        This class aims to be your casual Application.
+ *        You should extends it instead of Application.
  */
-public enum MAppInstance {
-	ins;
-	MApplication application;
-	public MApplication getApplication(){
-		return application;
+public class MApplication extends Application {
+	/**
+	 * Just keep a reference on it to avoid unusefull destruction/recreation of services
+	 */
+	ServiceLoader sLoader;
+
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Application#onCreate()
+	 */
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		// be available in every class of your application.
+		MAppInstance.ins.setApplication(this);
+		// keep the ref
+		sLoader = ServiceLoader.instance;
 	}
-	public MApplication get(){
-		return application;
-	}
-	public void setApplication(MApplication appli) {
-		application=appli;
-	}
+
 }

@@ -27,25 +27,45 @@
  *  <em>http://mathias-seguy.developpez.com/</em></br> </br>
  * *****************************************************************************************************************</br>
  */
-package com.android2ee.formation.service.helper1;
-
-import android.app.Application;
+package com.android2ee.formation.service.helper1.generic;
 
 /**
  * @author Mathias Seguy (Android2EE)
  * @goals
- * This class aims to:
- * <ul><li></li></ul>
+ *        This class aims to be the singleton pattern for the Application object.
+ *        You call MAppInstance.ins.get() to retrieve a pointer on the application object
  */
-public class MApplication extends Application {
-
-	/* (non-Javadoc)
-	 * @see android.app.Application#onCreate()
+public enum MAppInstance {
+	/**
+	 * The instance
 	 */
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		MAppInstance.ins.setApplication(this);
+	ins;
+	/**
+	 * The application object
+	 */
+	MApplication application;
+
+	/**
+	 * @return the application object
+	 */
+	public MApplication getApplication() {
+		return application;
 	}
 
+	/**
+	 * @return the application object
+	 */
+	public MApplication get() {
+		return application;
+	}
+
+	/**
+	 * Set the application Object
+	 * Should be called only by the Application object in its onCreate method
+	 * 
+	 * @param appli
+	 */
+	public void setApplication(MApplication appli) {
+		application = appli;
+	}
 }

@@ -28,13 +28,12 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.android2ee.formation.service.helper1.MAppInstance;
+import com.android2ee.formation.service.helper1.generic.MAppInstance;
 
 /**
  * @author Mathias Seguy (Android2EE)
  * @goals
- * This class aims to:
- * <ul><li></li></ul>
+ * This class aims to broadcast service methods' return to activities using intents
  */
 public enum ServiceHelper {
 	instance;
@@ -64,21 +63,28 @@ public enum ServiceHelper {
 	 * Here the Parcelable
 	 */
 	public static final String Parcelable = "Parcelable";
+	/**
+	 * TODO MSE finish declaring others types
+	 */
 
 	/******************************************************************************************/
 	/** CallBack **************************************************************************/
 	/******************************************************************************************/
 
 	/**
-	 * @param serviceMethodId
-	 * @param activityId
-	 * @param result
+	 * This method just create an Intent and launched it
+	 * @param serviceMethodId : The method that ask for sending the result to the activity
+	 * @param activityId : The activity that calls the method, the intent will be received by it
+	 * @param result: The object to carry (the result object of the method)
 	 */
 	public void callBack(int serviceMethodId, String activityId, Object result) {
-		Log.e("ServiceHelper","callBack, called: "+activityId+" res : "+result);
+		Log.v("ServiceHelper","callBack, called: "+activityId+" res : "+result);
+		//create the Intent
 		Intent callBack = new Intent(activityId);
+		//add the service method id
 		callBack.putExtra(SRV_MTH_ID, serviceMethodId);
 		//your object should implements Parcelable
+		//add the type of the result object (to unparse)
 		if (result instanceof Parcelable) {
 			callBack.putExtra(SRV_MTH_RES, (Parcelable) result);
 			callBack.putExtra(SRV_MTH_RES_TYPE,Parcelable);
@@ -86,6 +92,8 @@ public enum ServiceHelper {
 			callBack.putExtra(SRV_MTH_RES, (String) result);
 			callBack.putExtra(SRV_MTH_RES_TYPE,String);
 		}//and so on
+		//TODO MSE finish the list
+		//Then send the Intent
 		MAppInstance.ins.get().sendBroadcast(callBack);
 	}
 }
