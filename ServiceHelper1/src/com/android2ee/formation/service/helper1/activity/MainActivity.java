@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.android2ee.formation.service.helper1.R;
 import com.android2ee.formation.service.helper1.generic.MActivity;
+import com.android2ee.formation.service.helper1.generic.MAppInstance;
 import com.android2ee.formation.service.helper1.generic.MService;
 import com.android2ee.formation.service.helper1.generic.shelper.OnServiceCallBack;
 import com.android2ee.formation.service.helper1.service.loader.ServiceLoader;
@@ -96,7 +97,21 @@ public class MainActivity extends MActivity {
 			}
 		});
 	}
-
+	
+	/**
+	 * This method has to be called when the application died.<br/>
+	 * You need to track the end of your application to kill all the services<br/>
+	 * So find the activity that quit the application and add that method
+	 */
+	@Override
+	public void onBackPressed() {
+		Log.w("MainActivity", "MainActivity:onBackPressed() called");
+		//Call the application object and release the services
+		MAppInstance.ins.get().onBackPressed();
+		//and the super of course
+		super.onBackPressed();
+	}
+	
 	/******************************************************************************************/
 	/** Calling Services **************************************************************************/
 	/******************************************************************************************/

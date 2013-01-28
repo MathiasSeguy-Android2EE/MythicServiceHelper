@@ -25,7 +25,9 @@
 package com.android2ee.formation.service.helper1.service.loader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Service;
 import android.content.ComponentName;
@@ -50,19 +52,58 @@ import com.android2ee.formation.service.helper1.service.services.DummyService;
  *        (MSH_SL)
  */
 public enum ServiceLoader {
-
 	/**
 	 * The instance of the ServiceLoader
 	 */
 	instance;
-	
+
+	/******************************************************************************************/
+	/** Attributes **************************************************************************/
+	/******************************************************************************************/
+	/**
+	 * The list of the bound services to this used to unbind the service.
+	 * A service is pointed by its serviceConnection.
+	 */
+	List<ServiceConnection> boundServices = null;
+
+	/******************************************************************************************/
+	/** Constructor **************************************************************************/
+	/******************************************************************************************/
+	/**
+	 * Empty constructor to instantiate the list of bound services
+	 */
+	private ServiceLoader() {
+		Log.e("ServiceLoader", "ServiceLoader, constructor called");
+		boundServices = new ArrayList<ServiceConnection>();
+	}
+
+	/******************************************************************************************/
+	/** Destructor **************************************************************************/
+	/******************************************************************************************/
+	/**
+	 * This method is called by MApplication to unbind all the services and let them die when your
+	 * application die
+	 */
+	public synchronized void unbindAndDie() {
+		Log.w("ServiceLoader", "unbindAndDie, called: number of bound services " + boundServices.size());
+		Log.w("ServiceLoader",
+				"unbindAndDie, called: MAppInstance.ins.getApplication() " + MAppInstance.ins.getApplication());
+		// Browse all the services and unbind them all
+		for (ServiceConnection sConn : boundServices) {
+			//first unbind the service
+			MAppInstance.ins.getApplication().unbindService(sConn);
+		}
+		dService = null;
+		boundServices.clear();
+	}
+
 	/***************************************/
-	/**Use the template XXXX to generate code ****************/
+	/** Use the template XXXX to generate code ****************/
 	/******************************************/
 	/******************************************************************************************/
 	/** DummyService Accessors **************************************************************************/
 	/******************************************************************************************/
-	//TODO MSE do a template for the creation and declaration of such a service
+	// TODO MSE do a template for the creation and declaration of such a service
 	/**
 	 * The service you want to expose to activities
 	 */
@@ -76,62 +117,72 @@ public enum ServiceLoader {
 	 * Method to start the DummyService service
 	 */
 	private void startDummySrv() {
-		//insure the list is not null
-		if(onDServiceCallBack==null) {
+		// insure the list is not null
+		if (onDServiceCallBack == null) {
 			onDServiceCallBack = new ArrayList<OnServiceCallBack>();
 		}
-		//if the service is null, launch it using the Bind process
+		// if the service is null, launch it using the Bind process
 		if (dService == null) {
 			Log.v("ServiceLoader", "startDummySrv, called: " + dService);
 			Intent service = new Intent(MAppInstance.ins.getApplication(), DummyService.class);
-			MAppInstance.ins.getApplication().bindService(service, dummySrvConn, Service.START_STICKY);
+			MAppInstance.ins.getApplication().bindService(service, dummySrvConn,
+					Service.START_STICKY);
+		}
+		Log.w("ServiceLoader", "startDummySrv, adding dummySrvConn to boundServices ");
+		// add it to the list of bound services (if not in yet):
+		if(!boundServices.contains(dummySrvConn)) {
+			boundServices.add(dummySrvConn);
 		}
 
-	}	
+	}
 
 	/**
-	 * The method to be called by the activities 
+	 * The method to be called by the activities
+	 * 
 	 * @return the dService (could be null if not started yet)
 	 */
 	public void getdService(OnServiceCallBack onServiceCallBack) {
-		//I should add activity to the listener of intent with action activityId
-		//insure the service is started
+		// I should add activity to the listener of intent with action activityId
+		// insure the service is started
 		startDummySrv();
-		//then if the service is null add the callBack to the list of elements waiting for the service to be instantiated
+		// then if the service is null add the callBack to the list of elements waiting for the
+		// service to be instantiated
 		Log.v("ServiceLoader", "startDummySrv, called: " + dService);
 		if (dService == null) {
-			//add to the callback list
+			// add to the callback list
 			onDServiceCallBack.add(onServiceCallBack);
 		} else {
-			//else, service is not null, just use directly the callback
+			// else, service is not null, just use directly the callback
 			onServiceCallBack.onServiceCallBack(dService);
 		}
 	}
 
 	/**
-	 * The object to handle the connection of this with the  service.
+	 * The object to handle the connection of this with the service.
 	 * So this will keep a pointer on the service not loosing it in the memory.
 	 */
 	private ServiceConnection dummySrvConn = new ServiceConnection() {
-		//as usual deconnection
+		// as usual deconnexion
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
+			Log.w("ServiceLoader", "dummySrvConn:onServiceDisconnected, dServ=null");
 			dService = null;
 		}
-		//as usual connection
+
+		// as usual connection
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			//use the IBinder
+			// use the IBinder
 			dService = (DummyService) ((MService.LocalBinder) service).getService();
 			Log.v("ServiceLoader", "dummySrvConn:onServiceConnected, dServ: " + dService);
-			//notify callback the service is awake
+			// notify callback the service is awake
 			for (OnServiceCallBack callBack : onDServiceCallBack) {
 				Log.v("ServiceLoader", "dummySrvConn:onServiceConnected, callBack: " + callBack);
 				callBack.onServiceCallBack(dService);
 			}
-			//and clear the list
+			// and clear the list
 			onDServiceCallBack.clear();
-			onDServiceCallBack=null;
+			onDServiceCallBack = null;
 		}
 	};
 

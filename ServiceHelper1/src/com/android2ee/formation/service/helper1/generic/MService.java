@@ -76,4 +76,13 @@ public class MService extends Service {
 		return binder;
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Service#onDestroy()
+	 */
+	@Override
+	public void onDestroy() {
+		Log.w("MService", "MService:onDestroy() called");
+		super.onDestroy();
+	}
+
 }

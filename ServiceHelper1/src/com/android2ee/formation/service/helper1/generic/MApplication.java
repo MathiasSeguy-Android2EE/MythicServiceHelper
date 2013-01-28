@@ -30,20 +30,21 @@
 package com.android2ee.formation.service.helper1.generic;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.android2ee.formation.service.helper1.service.loader.ServiceLoader;
 
 /**
  * @author Mathias Seguy (Android2EE)
  * @goals
- *        This class aims to be your casual Application.
+ *        This class aims to be your casual Application.<br/>
  *        You should extends it instead of Application.
  */
 public class MApplication extends Application {
 	/**
 	 * Just keep a reference on it to avoid unusefull destruction/recreation of services
 	 */
-	ServiceLoader sLoader;
+	private ServiceLoader sLoader;
 
 	/*
 	 * (non-Javadoc)
@@ -51,6 +52,7 @@ public class MApplication extends Application {
 	 */
 	@Override
 	public void onCreate() {
+		Log.e("MApplication", "MApplication:onCreate called");
 		super.onCreate();
 		// be available in every class of your application.
 		MAppInstance.ins.setApplication(this);
@@ -58,4 +60,27 @@ public class MApplication extends Application {
 		sLoader = ServiceLoader.instance;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Application#onTerminate()
+	 */
+	@Override
+	public void onTerminate() {
+		// There is a rumor on this method that it is not called by the system
+		// this method is called only with emulator ?o?
+		// ok so test
+		Log.e("MApplication", "MApplication:onTerminate called");
+		
+		super.onTerminate();
+	}
+
+	/**
+	 * This method has to be called when the application died.<br/>
+	 * it kill all the services<br/>
+	 * So find the activity that quit the application and add that method
+	 */
+	public void onBackPressed() {
+		// Call the application object and release the services
+		sLoader.unbindAndDie();
+	}
 }

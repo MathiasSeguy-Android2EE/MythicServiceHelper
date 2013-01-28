@@ -106,7 +106,7 @@ public class DummyService extends MService {
 		new DoSomethingAsyncTask().execute(activityId);
 	}
 	/**
-	 * Just a dummy counter
+	 * Just a dummy counter (it also checks that the service die if it reset to 0 each time the application is launched)
 	 */
 	private int asyncCallNumber=0;;
 	/**
