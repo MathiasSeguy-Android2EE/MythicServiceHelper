@@ -46,7 +46,7 @@ import com.android2ee.formation.service.helper1.transverse.pojo.ConstantData;
  *        Don't forget for each method to declare its unique id (the Method Unique ID)
  */
 public class DummyService extends MService {
-	
+
 	/******************************************************************************************/
 	/** First exemple method **************************************************************************/
 	/******************************************************************************************/
@@ -70,7 +70,7 @@ public class DummyService extends MService {
 		// and to send the method return to that activity
 		ServiceHelper.instance.callBack(doSomethingID, activityId, data);
 	}
-	
+
 	/******************************************************************************************/
 	/** Second example method **************************************************************************/
 	/******************************************************************************************/
@@ -79,16 +79,19 @@ public class DummyService extends MService {
 	 * It has to be unique for your whole application and for each service'method of it.
 	 */
 	public static final int doSomethingWithourCBID = 10000102;
-
+	/**
+	 * unusued
+	 */
+	ConstantData unusedData;
 	/**
 	 * A dummy method that don't need to send data back to the calling activity
 	 */
 	public void doSomethingWithoutCallBack() {
 		// do your treatment
-		ConstantData data = new ConstantData("SomeResuls", 11021974, true);
+		unusedData = new ConstantData("SomeResuls", 11021974, true);
 		// And that's all no need to use the service helper
 	}
-	
+
 	/******************************************************************************************/
 	/** Third example method **************************************************************************/
 	/******************************************************************************************/
@@ -105,44 +108,48 @@ public class DummyService extends MService {
 		// do your treatment
 		new DoSomethingAsyncTask().execute(activityId);
 	}
+
 	/**
 	 * Just a dummy counter (it also checks that the service die if it reset to 0 each time the application is launched)
 	 */
-	private int asyncCallNumber=0;;
+	private int asyncCallNumber = 0;;
+
 	/**
 	 * @author Mathias Seguy (Android2EE)
 	 * @goals
-	 * This class aims to do a dummy async treatment just to show you how to code it.
-	 * The only trick is to have a field String activityID to call back the calling activity
-	 * and to give this parameter to the execute method of the asyncTask
+	 *        This class aims to do a dummy async treatment just to show you how to code it.
+	 *        The only trick is to have a field String activityID to call back the calling activity
+	 *        and to give this parameter to the execute method of the asyncTask
 	 */
-	private class DoSomethingAsyncTask extends AsyncTask<String, Void, Object>{
+	private class DoSomethingAsyncTask extends AsyncTask<String, Void, Object> {
 		/**
 		 * The activityId to call back it
 		 * Needed on every AsyncTask you declare
 		 */
-		private String activityID=null;
-		/* (non-Javadoc)
+		private String activityID = null;
+
+		/*
+		 * (non-Javadoc)
 		 * @see android.os.AsyncTask#doInBackground(Params[])
 		 */
 		@Override
 		protected Object doInBackground(String... activityId) {
-			//ok do a sleep
-			ConstantData data=null;
-			activityID=activityId[0];
+			// ok do a sleep
+			ConstantData data = null;
+			activityID = activityId[0];
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
-				Log.e("DummyService", "doSomethingAsyncTask:Exception",e);
-			}
-			finally {
+				Log.e("DummyService", "doSomethingAsyncTask:Exception", e);
+			} finally {
 				asyncCallNumber++;
-				data = new ConstantData("Some async Results", asyncCallNumber, false);				
+				data = new ConstantData("Some async Results", asyncCallNumber, false);
 			}
 			return data;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
 		@Override
@@ -152,6 +159,76 @@ public class DummyService extends MService {
 			// and to send the method return to that activity
 			ServiceHelper.instance.callBack(doSomethingAsyncID, activityID, result);
 			super.onPostExecute(result);
-		}		
+		}
+	}
+
+	/******************************************************************************************/
+	/** Fourth example method **************************************************************************/
+	/******************************************************************************************/
+	/**
+	 * The id of the method doSomethingAsynch
+	 * It has to be unique for your whole application and for each service'method of it.
+	 */
+	public static final int doSomethingAsyncSerialID = 10000104;
+
+	/**
+	 * A dummy method that don't need to send data back to the calling activity
+	 */
+	public void doSomethingAsynchSerial(String activityId) {
+		// do your treatment
+		new DoSomethingAsyncSerialTask().execute(activityId);
+	}
+
+	/**
+	 * Just a dummy counter (it also checks that the service die if it reset to 0 each time the application is launched)
+	 */
+	private int asyncSerialCallNumber = 0;;
+
+	/**
+	 * @author Mathias Seguy (Android2EE)
+	 * @goals
+	 *        This class aims to do a dummy async treatment just to show you how to code it.
+	 *        The only trick is to have a field String activityID to call back the calling activity
+	 *        and to give this parameter to the execute method of the asyncTask
+	 */
+	private class DoSomethingAsyncSerialTask extends AsyncTask<String, Void, Object> {
+		/**
+		 * The activityId to call back it
+		 * Needed on every AsyncTask you declare
+		 */
+		private String activityID = null;
+
+		/*
+		 * (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
+		@Override
+		protected Object doInBackground(String... activityId) {
+			// ok do a sleep
+			String data = null;
+			activityID = activityId[0];
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				Log.e("DummyService", "doSomethingAsyncTask:Exception", e);
+			} finally {
+				asyncSerialCallNumber++;
+				data = Integer.valueOf(asyncSerialCallNumber).toString();
+			}
+			return data;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
+		@Override
+		protected void onPostExecute(Object result) {
+			// And the important part is here
+			// When your treatment is over, just use the serviceHelper to contact the calling Activity
+			// and to send the method return to that activity
+			ServiceHelper.instance.callBack(doSomethingAsyncSerialID, activityID, result);
+			super.onPostExecute(result);
+		}
 	}
 }

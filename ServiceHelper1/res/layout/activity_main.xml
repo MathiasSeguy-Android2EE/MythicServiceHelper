@@ -1,110 +1,160 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/hello_world" />
+    <!-- First button : launch a simple service -->
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="21dp"
-        android:layout_marginRight="21dp"
-        android:layout_marginTop="21dp"
-        android:background="#88FF0000"
-        android:orientation="horizontal" >
-
-        <ProgressBar
-            android:id="@+id/pbrTxvServiceSimpleResult"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:visibility="gone" >
-        </ProgressBar>
-
-        <Button
-            android:id="@+id/btnCallService"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/launchServ" />
+        android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/txvServiceResult"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="21dp"
-            android:layout_weight="2" >
-        </TextView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="21dp"
-        android:layout_marginRight="21dp"
-        android:layout_marginTop="21dp"
-        android:background="#8800FF00"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/btnCallServiceNoCB"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/launchServWithoutCB" />
-
-        <TextView
-            android:id="@+id/txvServiceResultNoCB"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="21dp"
-            android:layout_weight="2"
-            android:text="@string/resultServWithoutCB" >
-        </TextView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="21dp"
-        android:layout_marginRight="21dp"
-        android:layout_marginTop="21dp"
-        android:background="#880000FF"
-        android:orientation="horizontal" >
-
-        <ProgressBar
-            android:id="@+id/pbrTxvServiceAsyncResult"
-            style="?android:attr/progressBarStyleSmall"
+            android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone" >
-        </ProgressBar>
+            android:text="@string/hello_world" />
 
-        <Button
-            android:id="@+id/btnCallServiceAsync"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/launchServAsync" />
-
-        <TextView
-            android:id="@+id/txvServiceResultAsync"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="21dp"
-            android:layout_weight="2" >
-        </TextView>
+            android:layout_marginRight="21dp"
+            android:layout_marginTop="21dp"
+            android:background="#88FFEE00"
+            android:orientation="horizontal"
+            android:weightSum="4" >
+
+            <ProgressBar
+                android:id="@+id/pbrTxvServiceSimpleResult"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:visibility="gone" >
+            </ProgressBar>
+
+            <Button
+                android:id="@+id/btnCallService"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/launchServ" />
+
+            <TextView
+                android:id="@+id/txvServiceResult"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="21dp"
+                android:layout_weight="2" >
+            </TextView>
+        </LinearLayout>
+        <!-- Second button : launch a service with no result -->
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="21dp"
+            android:layout_marginRight="21dp"
+            android:layout_marginTop="21dp"
+            android:background="#8800FF00"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btnCallServiceNoCB"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/launchServWithoutCB" />
+
+            <TextView
+                android:id="@+id/txvServiceResultNoCB"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="21dp"
+                android:layout_weight="2"
+                android:text="@string/resultServWithoutCB" >
+            </TextView>
+        </LinearLayout>
+        <!-- Third button : launch an asynch service -->
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="21dp"
+            android:layout_marginRight="21dp"
+            android:layout_marginTop="21dp"
+            android:background="#880000FF"
+            android:orientation="horizontal"
+            android:weightSum="4" >
+
+            <ProgressBar
+                android:id="@+id/pbrTxvServiceAsyncResult"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:visibility="gone" >
+            </ProgressBar>
+
+            <Button
+                android:id="@+id/btnCallServiceAsync"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/launchServAsync" />
+
+            <TextView
+                android:id="@+id/txvServiceResultAsync"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="21dp"
+                android:layout_weight="2" >
+            </TextView>
+        </LinearLayout>
+        <!-- Fourth button : launch an asynch service that returns a serializable -->
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="21dp"
+            android:layout_marginRight="21dp"
+            android:layout_marginTop="21dp"
+            android:background="#880000FF"
+            android:orientation="horizontal"
+            android:weightSum="4" >
+
+            <ProgressBar
+                android:id="@+id/pbrTxvServiceAsyncSerialResult"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:visibility="gone" >
+            </ProgressBar>
+
+            <Button
+                android:id="@+id/btnCallServiceAsyncSerial"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/launchServAsyncSerial" />
+
+            <TextView
+                android:id="@+id/txvServiceResultAsyncSerial"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="21dp"
+                android:layout_weight="2" >
+            </TextView>
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

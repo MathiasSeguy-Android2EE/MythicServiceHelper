@@ -8,4 +8,5 @@
 	<string name="launchServWithoutCB">Launch Service (no CB)</string>
 	<string name="resultServWithoutCB">No result (normal)</string>
 	<string name="launchServAsync">Launch Async Service</string>
+	<string name="launchServAsyncSerial">Launch Async Service</string>
 </resources>

@@ -72,6 +72,7 @@ public abstract class MApplication extends Application {
 		// this method is called only with emulator ?o?
 		// ok so test
 		Log.e("MApplication", "MApplication:onTerminate called");
+		//test is ok, this method is never called on device.
 
 		super.onTerminate();
 	}

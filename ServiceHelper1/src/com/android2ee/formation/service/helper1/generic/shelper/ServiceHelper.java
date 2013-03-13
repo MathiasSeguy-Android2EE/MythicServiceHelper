@@ -24,6 +24,8 @@
  */
 package com.android2ee.formation.service.helper1.generic.shelper;
 
+import java.io.Serializable;
+
 import android.content.Intent;
 import android.os.Parcelable;
 import android.util.Log;
@@ -57,7 +59,7 @@ public enum ServiceHelper {
 	 * Constant to be used to type the intent to set the data instanceof,
 	 * Here the String
 	 */
-	public static final String String = "String";
+	public static final String SERIALIZABLE = "Serializable";
 	/**
 	 * Constant to be used to type the intent to set the data instanceof,
 	 * Here the Parcelable
@@ -88,11 +90,11 @@ public enum ServiceHelper {
 		if (result instanceof Parcelable) {
 			callBack.putExtra(SRV_MTH_RES, (Parcelable) result);
 			callBack.putExtra(SRV_MTH_RES_TYPE,Parcelable);
-		}else if( result instanceof String) {
-			callBack.putExtra(SRV_MTH_RES, (String) result);
-			callBack.putExtra(SRV_MTH_RES_TYPE,String);
-		}//and so on
-		//TODO MSE finish the list
+		}else if( result instanceof Serializable) {
+			callBack.putExtra(SRV_MTH_RES, (Serializable) result);
+			callBack.putExtra(SRV_MTH_RES_TYPE,SERIALIZABLE);
+		}
+		
 		//Then send the Intent
 		MAppInstance.ins.get().sendBroadcast(callBack);
 	}

@@ -120,11 +120,11 @@ public abstract class MActivity extends Activity {
 					// com.android2ee.formation.service.helper1.transverse.pojo.ConstantData
 					onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
 							intent.getParcelableExtra(ServiceHelper.SRV_MTH_RES));
-				} else if (resType.equals(ServiceHelper.String)) {
-					// other case
+				} else if (resType.equals(ServiceHelper.SERIALIZABLE)) {
+					// serializable works too
 					onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
-							intent.getStringExtra(ServiceHelper.SRV_MTH_RES));
-				}// and so on
+							intent.getSerializableExtra(ServiceHelper.SRV_MTH_RES));
+				}
 
 			}
 		}

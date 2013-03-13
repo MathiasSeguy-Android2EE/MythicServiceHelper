@@ -1,5 +1,7 @@
 package com.android2ee.formation.service.helper1.activity;
 
+import java.io.Serializable;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -43,7 +45,7 @@ public class MainActivity extends MActivity {
 	 * To count the number of call done to the simple service
 	 * This helps displaying or not the ProgressBar
 	 */
-	private int simpleServiceCall=0;
+	private int simpleServiceCall = 0;
 	/**
 	 * The TextView that display the result of the service call where the method do an
 	 * asyncTreatment
@@ -57,7 +59,23 @@ public class MainActivity extends MActivity {
 	 * To count the number of call done to the simple service.
 	 * This helps displaying or not the ProgressBar
 	 */
-	private int asyncServiceCall=0;
+	private int asyncServiceCall = 0;
+	/**
+	 * The TextView that display the result of the service call where the method do an
+	 * asyncTreatment
+	 */
+	TextView txvResultAsyncSerial = null;
+	/**
+	 * The progress bar that is displayed when waiting for service call back for resultAsync
+	 */
+	ProgressBar prbResultAsyncSerial = null;
+	/**
+	 * To count the number of call done to the simple service.
+	 * This helps displaying or not the ProgressBar
+	 */
+	private int asyncSerialCall = 0;
+	
+
 	/******************************************************************************************/
 	/** Life cycle methods **************************************************************************/
 	/******************************************************************************************/
@@ -88,6 +106,18 @@ public class MainActivity extends MActivity {
 				launchServiceAsync();
 			}
 		});
+		// Call an async method (which uses a treatment thread) of a business service
+		//and get in return a serializabled object
+		txvResultAsyncSerial = (TextView) findViewById(R.id.txvServiceResultAsyncSerial);
+		prbResultAsyncSerial = (ProgressBar) findViewById(R.id.pbrTxvServiceAsyncSerialResult);
+		Button btnLaunchServAsyncSerial = (Button) findViewById(R.id.btnCallServiceAsyncSerial);
+		btnLaunchServAsyncSerial.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				launchServiceAsyncSerial();
+			}
+		});
+		
 		// Call a simple method of a business service that has no return
 		Button btnLaunchServButton = (Button) findViewById(R.id.btnCallServiceNoCB);
 		btnLaunchServButton.setOnClickListener(new OnClickListener() {
@@ -97,7 +127,7 @@ public class MainActivity extends MActivity {
 			}
 		});
 	}
-	
+
 	/**
 	 * This method has to be called when the application died.<br/>
 	 * You need to track the end of your application to kill all the services<br/>
@@ -106,12 +136,12 @@ public class MainActivity extends MActivity {
 	@Override
 	public void onBackPressed() {
 		Log.w("MainActivity", "MainActivity:onBackPressed() called");
-		//Call the application object and release the services
+		// Call the application object and release the services
 		MAppInstance.ins.get().onBackPressed();
-		//and the super of course
+		// and the super of course
 		super.onBackPressed();
 	}
-	
+
 	/******************************************************************************************/
 	/** Calling Services **************************************************************************/
 	/******************************************************************************************/
@@ -168,6 +198,27 @@ public class MainActivity extends MActivity {
 
 	/**
 	 * The method to show how to launch a service.<br/>
+	 * The method called in the example has a beckground thread that do a stuff in an async way
+	 * For example we use String res=myService.doSomething;<br/>
+	 * The way to do that is the following method<br/>
+	 */
+	private void launchServiceAsyncSerial() {
+		Log.v("MainActivity", "launchService called");
+		// find your service...
+		ServiceLoader.instance.getdService(new OnServiceCallBack() {
+			public void onServiceCallBack(MService service) {
+				// so just call the method you want of your service
+				((DummyService) service).doSomethingAsynchSerial(getActivityId());
+			}
+		});
+		// You can also display a indeterminate progress bar
+		asyncSerialCall++;
+		prbResultAsyncSerial.setVisibility(View.VISIBLE);
+	}
+
+	
+	/**
+	 * The method to show how to launch a service.<br/>
 	 * For example we use String res=myService.doSomething;<br/>
 	 * The way to do that is the following method<br/>
 	 */
@@ -204,6 +255,10 @@ public class MainActivity extends MActivity {
 			// call your result method doSomethingResult(result)
 			onAysncServiceResult((ConstantData) result);
 			break;
+		case DummyService.doSomethingAsyncSerialID:
+			// call your result method doSomethingResult(result)
+			onAysncSerialServiceResult((Serializable) result);
+			break;
 		case DummyService.doSomethingWithourCBID:
 			// This case does not exist, there is no call back done by this method
 			// there is no need to do anything;
@@ -227,7 +282,7 @@ public class MainActivity extends MActivity {
 				+ message.boleen);
 		// You can also display a indeterminate progress bar
 		simpleServiceCall--;
-		if(simpleServiceCall==0) {
+		if (simpleServiceCall == 0) {
 			prbResultSimple.setVisibility(View.GONE);
 		}
 		txvResultSimple.setText(message.message + "," + message.entier + "," + message.boleen);
@@ -241,11 +296,25 @@ public class MainActivity extends MActivity {
 	private void onAysncServiceResult(ConstantData message) {
 		// You can also display a indeterminate progress bar
 		asyncServiceCall--;
-		if(asyncServiceCall==0) {
+		if (asyncServiceCall == 0) {
 			prbResultAsync.setVisibility(View.GONE);
 		}
-		
+
 		txvResultAsync.setText(message.message + "," + message.entier + "," + message.boleen);
+	}
+	/**
+	 * Same as onServiceResult
+	 * 
+	 * @param message
+	 */
+	private void onAysncSerialServiceResult(Serializable message) {
+		// You can also display a indeterminate progress bar
+		asyncSerialCall--;
+		if (asyncSerialCall == 0) {
+			prbResultAsyncSerial.setVisibility(View.GONE);
+		}
+
+		txvResultAsyncSerial.setText("Int:"+((String)message)+"A to String on the serializable "+message.toString());
 	}
 
 	/******************************************************************************************/
