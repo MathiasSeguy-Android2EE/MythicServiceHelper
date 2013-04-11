@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="mactivity_hc_version_exception">You are using a class that is not compatible with your SDK version (You use HoneyComb Fragment)</string>
+    <string name="mactivity_version_exception">You are using a class that is not compatible with your SDK version (You use Activity for SDK smaller than HoneyComb)</string>
+
+</resources>
