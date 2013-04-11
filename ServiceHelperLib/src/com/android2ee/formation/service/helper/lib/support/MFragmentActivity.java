@@ -1,72 +1,62 @@
-/**
- * <ul>
+/**<ul>
  * <li>ServiceHelper1</li>
  * <li>com.android2ee.formation.service.helper1.generic</li>
- * <li>26 janv. 2013</li>
+ * <li>10 avr. 2013</li>
+ * 
  * <li>======================================================</li>
+ *
  * <li>Projet : Mathias Seguy Project</li>
- * <li>Produit par MSE.</li> /**
+ * <li>Produit par MSE.</li>
+ *
+ /**
  * <ul>
  * Android Tutorial, An <strong>Android2EE</strong>'s project.</br> 
- * Produced by <strong>Dr. Mathias
- * SEGUY</strong>.</br> 
- * Delivered by <strong>http://android2ee.com/</strong></br> 
- * Belongs to
- * <strong>Mathias Seguy</strong></br> </br> 
- * This code is free for any usage except training and
- * can't be distribute.</br> 
- * The distribution is reserved to the site
- * <strong>http://android2ee.com</strong>.</br> 
- * The intelectual property belongs to <strong>Mathias
- * Seguy</strong>.</br> <em>http://mathias-seguy.developpez.com/</em></br> </br>
- * ********************
- * ******************************************************************************
- * ***************</br> 
- * Ce code est libre de toute utilisation mais n'est pas distribuable.</br> 
- * Sa distribution est reservée au site <strong>http://android2ee.com</strong>.</br> 
- * Sa propriété
- * intellectuelle appartient à <strong>Mathias Seguy</strong>.</br>
+ * Produced by <strong>Dr. Mathias SEGUY</strong>.</br>
+ * Delivered by <strong>http://android2ee.com/</strong></br>
+ *  Belongs to <strong>Mathias Seguy</strong></br>
+ ****************************************************************************************************************</br>
+ * This code is free for any usage except training and can't be distribute.</br>
+ * The distribution is reserved to the site <strong>http://android2ee.com</strong>.</br>
+ * The intelectual property belongs to <strong>Mathias Seguy</strong>.</br>
  * <em>http://mathias-seguy.developpez.com/</em></br> </br>
- * *****************************************
- * ************************************************************************</br>
+ * 
+ * *****************************************************************************************************************</br>
+ *  Ce code est libre de toute utilisation mais n'est pas distribuable.</br>
+ *  Sa distribution est reservée au site <strong>http://android2ee.com</strong>.</br> 
+ *  Sa propriété intellectuelle appartient à <strong>Mathias Seguy</strong>.</br>
+ *  <em>http://mathias-seguy.developpez.com/</em></br> </br>
+ * *****************************************************************************************************************</br>
  */
-package com.android2ee.formation.service.helper1.generic.honeycomb;
+package com.android2ee.formation.service.helper.lib.support;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
-import com.android2ee.formation.service.helper1.R;
-import com.android2ee.formation.service.helper1.generic.shelper.ServiceHelper;
+import com.android2ee.formation.service.helper.lib.serviceHelper.ServiceHelper;
 
 /**
  * @author Mathias Seguy (Android2EE)
  * @goals
- *        This class aims to be the main Activty to inherits when using the ServiceHelper<br/>
+ *        This class aims toThis class aims to be the main FragmentActivty to inherits when using the ServiceHelper<br/>
  *        You have to take care of the import of the activity especially if your using the compat
  *        library.<br/>
  *        This class just hide the fact that your activity will be listening for intent named with
  *        the activityID
  *        that you pass when implementing the method getActivityId.
- *        TO BE USED WHEN USING NATIVE FRAGMENT POST HONEYCOMB
  */
-public abstract class MActivityHC extends Activity {
+public abstract class MFragmentActivity extends FragmentActivity {
 	/**
 	 * @return a unique identifier of the activity to be attached to intents that have to be
 	 *         calledBack by the activity
-	 * @throws VersionException 
 	 */
-	public String getActivityId(){
-		//Make a log if the version is not compatible
-		if(!getResources().getBoolean(R.bool.postHC)) {
-			Log.e("MActivityHC", getString(R.string.mactivity_hc_version_exception));
-		}
+	public String getActivityId() {
 		// so use the canonical name it should be enough
 		return getClass().getCanonicalName();
 	}
@@ -109,7 +99,7 @@ public abstract class MActivityHC extends Activity {
 	private BroadcastReceiver serviceCallBackReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d("MActivityHC", "serviceCallBackReceiver:onReceive, called: " + intent.getAction());
+			Log.d("MActivity", "serviceCallBackReceiver:onReceive, called: " + intent.getAction());
 			// first be sure to listen for the right intent
 			if (intent.getAction() == getActivityId()) {
 				// retrieve the type of the result object
@@ -136,7 +126,7 @@ public abstract class MActivityHC extends Activity {
 				}
 
 			} else {
-				for (MFragmentHC mFrag : listeningFragments) {
+				for (MFragmentSup mFrag : listeningFragments) {
 					if (intent.getAction() == mFrag.getFragmentId()) {
 						// retrieve the type of the result object
 						String resType = intent.getStringExtra(ServiceHelper.SRV_MTH_RES_TYPE);
@@ -177,9 +167,8 @@ public abstract class MActivityHC extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.v("MActivityHC", "onResume, registering " + getActivityId());
+		Log.v("MActivity", "onResume, registering " + getActivityId());
 		registerReceiver(serviceCallBackReceiver, new IntentFilter(getActivityId()));
-
 	}
 
 	/*
@@ -202,15 +191,15 @@ public abstract class MActivityHC extends Activity {
 	/**
 	 * The list of fragment that are listening for intents
 	 */
-	List<MFragmentHC> listeningFragments = new ArrayList<MFragmentHC>();
+	List<MFragmentSup> listeningFragments = new ArrayList<MFragmentSup>();
 
 	/**
-	 * This method is called by the MFragmentHC to be register as a broadcast receiever of the intent
+	 * This method is called by the MFragmentSup to be register as a broadcast receiever of the intent
 	 * 
 	 * @param fragment
 	 *            The fragment for registration
 	 */
-	void addMFragment(MFragmentHC fragment) {
+	void addMFragment(MFragmentSup fragment) {
 		// add the fragment to the list of listening fragments
 		listeningFragments.add(fragment);
 		// add the fragmentId as a listening callback
@@ -218,11 +207,11 @@ public abstract class MActivityHC extends Activity {
 	}
 
 	/**
-	 * This method is called by the MFragmentHC to be unregister as a broadcast receiever of the intent
+	 * This method is called by the MFragmentSup to be unregister as a broadcast receiever of the intent
 	 * 
 	 * @param fragment
 	 */
-	void removeMFragment(MFragmentHC fragment) {
+	void removeMFragment(MFragmentSup fragment) {
 		// add the fragment to the list of listening fragments
 		listeningFragments.remove(fragment);
 	}

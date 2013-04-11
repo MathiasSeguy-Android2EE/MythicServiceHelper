@@ -30,7 +30,7 @@
  * *****************************************
  * ************************************************************************</br>
  */
-package com.android2ee.formation.service.helper1.generic;
+package com.android2ee.formation.service.helper1.generic.legacy;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -39,6 +39,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
+import com.android2ee.formation.service.helper1.R;
 import com.android2ee.formation.service.helper1.generic.shelper.ServiceHelper;
 
 /**
@@ -47,17 +48,20 @@ import com.android2ee.formation.service.helper1.generic.shelper.ServiceHelper;
  *        This class aims to be the main Activty to inherits when using the ServiceHelper<br/>
  *        You have to take care of the import of the activity especially if your using the compat
  *        library.<br/>
- *        TODO MSE implements for compatLibrairy<br/>
  *        This class just hide the fact that your activity will be listening for intent named with
  *        the activityID
  *        that you pass when implementing the method getActivityId.
  */
-public abstract class MActivity extends Activity {
+public abstract class MActivityLeg extends Activity {
 	/**
 	 * @return a unique identifier of the activity to be attached to intents that have to be
 	 *         calledBack by the activity
 	 */
 	public String getActivityId() {
+		// Make a log if the version is not compatible
+		if (getResources().getBoolean(R.bool.postHC)) {
+			Log.e("MActivityHC", getString(R.string.mactivity_version_exception));
+		}
 		// so use the canonical name it should be enough
 		return getClass().getCanonicalName();
 	}
@@ -100,7 +104,7 @@ public abstract class MActivity extends Activity {
 	private BroadcastReceiver serviceCallBackReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d("MActivity", "serviceCallBackReceiver:onReceive, called: " + intent.getAction());
+			Log.d("MActivityLeg", "serviceCallBackReceiver:onReceive, called: " + intent.getAction());
 			// first be sure to listen for the right intent
 			if (intent.getAction() == getActivityId()) {
 				// retrieve the type of the result object
@@ -141,7 +145,7 @@ public abstract class MActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.v("MActivity", "onResume, registering " + getActivityId());
+		Log.v("MActivityLeg", "onResume, registering " + getActivityId());
 		registerReceiver(serviceCallBackReceiver, new IntentFilter(getActivityId()));
 	}
 

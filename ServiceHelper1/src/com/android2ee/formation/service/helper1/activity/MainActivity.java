@@ -12,9 +12,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android2ee.formation.service.helper1.R;
-import com.android2ee.formation.service.helper1.generic.MActivity;
 import com.android2ee.formation.service.helper1.generic.MAppInstance;
 import com.android2ee.formation.service.helper1.generic.MService;
+import com.android2ee.formation.service.helper1.generic.legacy.MActivityLeg;
 import com.android2ee.formation.service.helper1.generic.shelper.OnServiceCallBack;
 import com.android2ee.formation.service.helper1.service.loader.ServiceLoader;
 import com.android2ee.formation.service.helper1.service.services.DummyService;
@@ -28,7 +28,7 @@ import com.android2ee.formation.service.helper1.transverse.pojo.ConstantData;
  *        the service returns (using callback and intent, transparent for you) you use that return
  *        to do a stuff (displaying it in a tewtView for exemple)<br/>
  */
-public class MainActivity extends MActivity {
+public class MainActivity extends MActivityLeg {
 	/******************************************************************************************/
 	/** Attributes **************************************************************************/
 	/******************************************************************************************/

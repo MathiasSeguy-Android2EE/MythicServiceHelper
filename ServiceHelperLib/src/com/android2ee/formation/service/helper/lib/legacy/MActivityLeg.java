@@ -30,10 +30,7 @@
  * *****************************************
  * ************************************************************************</br>
  */
-package com.android2ee.formation.service.helper1.generic.honeycomb;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.android2ee.formation.service.helper.lib.legacy;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -42,8 +39,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.android2ee.formation.service.helper1.R;
-import com.android2ee.formation.service.helper1.generic.shelper.ServiceHelper;
+import com.android2ee.formation.service.helper.lib.R;
+import com.android2ee.formation.service.helper.lib.serviceHelper.ServiceHelper;
 
 /**
  * @author Mathias Seguy (Android2EE)
@@ -54,18 +51,16 @@ import com.android2ee.formation.service.helper1.generic.shelper.ServiceHelper;
  *        This class just hide the fact that your activity will be listening for intent named with
  *        the activityID
  *        that you pass when implementing the method getActivityId.
- *        TO BE USED WHEN USING NATIVE FRAGMENT POST HONEYCOMB
  */
-public abstract class MActivityHC extends Activity {
+public abstract class MActivityLeg extends Activity {
 	/**
 	 * @return a unique identifier of the activity to be attached to intents that have to be
 	 *         calledBack by the activity
-	 * @throws VersionException 
 	 */
-	public String getActivityId(){
-		//Make a log if the version is not compatible
-		if(!getResources().getBoolean(R.bool.postHC)) {
-			Log.e("MActivityHC", getString(R.string.mactivity_hc_version_exception));
+	public String getActivityId() {
+		// Make a log if the version is not compatible
+		if (getResources().getBoolean(R.bool.postHC)) {
+			Log.e("MActivityHC", getString(R.string.mactivity_version_exception));
 		}
 		// so use the canonical name it should be enough
 		return getClass().getCanonicalName();
@@ -109,7 +104,7 @@ public abstract class MActivityHC extends Activity {
 	private BroadcastReceiver serviceCallBackReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d("MActivityHC", "serviceCallBackReceiver:onReceive, called: " + intent.getAction());
+			Log.d("MActivityLeg", "serviceCallBackReceiver:onReceive, called: " + intent.getAction());
 			// first be sure to listen for the right intent
 			if (intent.getAction() == getActivityId()) {
 				// retrieve the type of the result object
@@ -135,33 +130,6 @@ public abstract class MActivityHC extends Activity {
 							intent.getSerializableExtra(ServiceHelper.SRV_MTH_RES));
 				}
 
-			} else {
-				for (MFragmentHC mFrag : listeningFragments) {
-					if (intent.getAction() == mFrag.getFragmentId()) {
-						// retrieve the type of the result object
-						String resType = intent.getStringExtra(ServiceHelper.SRV_MTH_RES_TYPE);
-						// using that type, retrieve the result object
-						// there will be a lot of case, should be the same case than the number of
-						// intent.get**Extra method
-						if (resType.equals(ServiceHelper.Parcelable)) {
-							// Parcelable case: It should be the case you use for your object (your POJO)
-							// You should implement Parcelable on all the business objects you want to be
-							// returned by the any services.
-							// Why? Because every returned object of a service's method is sent to the GUI
-							// using an Intent
-							// and Intent only accept Parcelable in their bundle. So, you have to implement
-							// it.
-							// an exemple of implemented Parcelable is @see
-							// com.android2ee.formation.service.helper1.transverse.pojo.ConstantData
-							mFrag.onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
-									intent.getParcelableExtra(ServiceHelper.SRV_MTH_RES));
-						} else if (resType.equals(ServiceHelper.SERIALIZABLE)) {
-							// serializable works too
-							mFrag.onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
-									intent.getSerializableExtra(ServiceHelper.SRV_MTH_RES));
-						}
-					}
-				}
 			}
 		}
 	};
@@ -177,9 +145,8 @@ public abstract class MActivityHC extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.v("MActivityHC", "onResume, registering " + getActivityId());
+		Log.v("MActivityLeg", "onResume, registering " + getActivityId());
 		registerReceiver(serviceCallBackReceiver, new IntentFilter(getActivityId()));
-
 	}
 
 	/*
@@ -195,36 +162,4 @@ public abstract class MActivityHC extends Activity {
 		super.onPause();
 		unregisterReceiver(serviceCallBackReceiver);
 	}
-
-	/******************************************************************************************/
-	/** Managing the link with the MFragmentActivity **************************************************************************/
-	/******************************************************************************************/
-	/**
-	 * The list of fragment that are listening for intents
-	 */
-	List<MFragmentHC> listeningFragments = new ArrayList<MFragmentHC>();
-
-	/**
-	 * This method is called by the MFragmentHC to be register as a broadcast receiever of the intent
-	 * 
-	 * @param fragment
-	 *            The fragment for registration
-	 */
-	void addMFragment(MFragmentHC fragment) {
-		// add the fragment to the list of listening fragments
-		listeningFragments.add(fragment);
-		// add the fragmentId as a listening callback
-		registerReceiver(serviceCallBackReceiver, new IntentFilter(fragment.getFragmentId()));
-	}
-
-	/**
-	 * This method is called by the MFragmentHC to be unregister as a broadcast receiever of the intent
-	 * 
-	 * @param fragment
-	 */
-	void removeMFragment(MFragmentHC fragment) {
-		// add the fragment to the list of listening fragments
-		listeningFragments.remove(fragment);
-	}
-
 }
