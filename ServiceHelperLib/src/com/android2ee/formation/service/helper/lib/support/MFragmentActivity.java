@@ -101,7 +101,7 @@ public abstract class MFragmentActivity extends FragmentActivity {
 		public void onReceive(Context context, Intent intent) {
 			Log.d("MActivity", "serviceCallBackReceiver:onReceive, called: " + intent.getAction());
 			// first be sure to listen for the right intent
-			if (intent.getAction() == getActivityId()) {
+			if (intent.getAction().equals(getActivityId())) {
 				// retrieve the type of the result object
 				String resType = intent.getStringExtra(ServiceHelper.SRV_MTH_RES_TYPE);
 				// using that type, retrieve the result object
@@ -127,7 +127,7 @@ public abstract class MFragmentActivity extends FragmentActivity {
 
 			} else {
 				for (MFragmentSup mFrag : listeningFragments) {
-					if (intent.getAction() == mFrag.getFragmentId()) {
+					if (intent.getAction().equals(mFrag.getFragmentId())) {
 						// retrieve the type of the result object
 						String resType = intent.getStringExtra(ServiceHelper.SRV_MTH_RES_TYPE);
 						// using that type, retrieve the result object
