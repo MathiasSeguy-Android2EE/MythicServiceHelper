@@ -133,6 +133,10 @@ public abstract class MActivityHC extends Activity {
 					// serializable works too
 					onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
 							intent.getSerializableExtra(ServiceHelper.SRV_MTH_RES));
+				} else {
+					// just call back with an null object
+					onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
+							null);
 				}
 
 			} else {
@@ -159,6 +163,10 @@ public abstract class MActivityHC extends Activity {
 							// serializable works too
 							mFrag.onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
 									intent.getSerializableExtra(ServiceHelper.SRV_MTH_RES));
+						} else {
+							// just call back with an null object
+							onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
+									null);
 						}
 					}
 				}
