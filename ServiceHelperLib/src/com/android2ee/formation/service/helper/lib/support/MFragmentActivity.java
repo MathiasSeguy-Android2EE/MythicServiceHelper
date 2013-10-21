@@ -177,6 +177,11 @@ public abstract class MFragmentActivity extends FragmentActivity {
 		super.onResume();
 		Log.v("MActivity", "onResume, registering " + getActivityId());
 		registerReceiver(serviceCallBackReceiver, new IntentFilter(getActivityId()));
+		if (listeningFragments != null) {
+			for (MFragmentSup fragment : listeningFragments) {
+				registerReceiver(serviceCallBackReceiver, new IntentFilter(fragment.getFragmentId()));
+			}
+		}
 	}
 
 	/*

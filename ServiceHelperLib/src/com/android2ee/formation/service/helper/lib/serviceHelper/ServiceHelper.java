@@ -79,7 +79,7 @@ public enum ServiceHelper {
 	 * @param result: The object to carry (the result object of the method)
 	 */
 	public void callBack(int serviceMethodId, String activityId, Object result) {
-		Log.v("ServiceHelper","callBack, called: "+activityId+" res : "+result);
+		Log.d("ServiceHelper","callBack, called: "+activityId+" res : "+result);
 		//create the Intent
 		Intent callBack = new Intent(activityId);
 		//add the service method id

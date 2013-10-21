@@ -187,6 +187,11 @@ public abstract class MActivityHC extends Activity {
 		super.onResume();
 		Log.v("MActivityHC", "onResume, registering " + getActivityId());
 		registerReceiver(serviceCallBackReceiver, new IntentFilter(getActivityId()));
+		if (listeningFragments != null) {
+			for (MFragmentHC fragment : listeningFragments) {
+				registerReceiver(serviceCallBackReceiver, new IntentFilter(fragment.getFragmentId()));
+			}
+		}
 
 	}
 

@@ -60,7 +60,7 @@ public abstract class MActivityLeg extends Activity {
 	public String getActivityId() {
 		// Make a log if the version is not compatible
 		if (getResources().getBoolean(R.bool.postHC)) {
-			Log.e("MActivityHC", getString(R.string.mactivity_version_exception));
+			Log.e("MActivityLeg", getString(R.string.mactivity_version_exception));
 		}
 		// so use the canonical name it should be enough
 		return getClass().getCanonicalName();
