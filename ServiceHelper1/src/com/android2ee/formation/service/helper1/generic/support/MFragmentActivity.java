@@ -99,7 +99,7 @@ public abstract class MFragmentActivity extends FragmentActivity {
 	private BroadcastReceiver serviceCallBackReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d("MActivity", "serviceCallBackReceiver:onReceive, called: " + intent.getAction());
+			Log.d("MFragmentActivity", "serviceCallBackReceiver:onReceive, called: " + intent.getAction());
 			// first be sure to listen for the right intent
 			if (intent.getAction() == getActivityId()) {
 				// retrieve the type of the result object
