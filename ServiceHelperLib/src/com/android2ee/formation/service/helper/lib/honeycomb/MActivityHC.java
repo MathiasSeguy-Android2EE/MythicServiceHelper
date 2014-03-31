@@ -111,7 +111,8 @@ public abstract class MActivityHC extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			Log.d("MActivityHC", "serviceCallBackReceiver:onReceive, called: " + intent.getAction());
 			// first be sure to listen for the right intent
-			if (intent.getAction() == getActivityId()) {
+
+			if (intent.getAction().equals(getActivityId())) {
 				// retrieve the type of the result object
 				String resType = intent.getStringExtra(ServiceHelper.SRV_MTH_RES_TYPE);
 				// using that type, retrieve the result object
@@ -133,11 +134,17 @@ public abstract class MActivityHC extends Activity {
 					// serializable works too
 					onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
 							intent.getSerializableExtra(ServiceHelper.SRV_MTH_RES));
+
+				} else {
+					// just call back with an null object
+					onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
+							null);
 				}
 
 			} else {
 				for (MFragmentHC mFrag : listeningFragments) {
-					if (intent.getAction() == mFrag.getFragmentId()) {
+
+					if (intent.getAction().equals(mFrag.getFragmentId())) {
 						// retrieve the type of the result object
 						String resType = intent.getStringExtra(ServiceHelper.SRV_MTH_RES_TYPE);
 						// using that type, retrieve the result object
@@ -159,6 +166,11 @@ public abstract class MActivityHC extends Activity {
 							// serializable works too
 							mFrag.onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
 									intent.getSerializableExtra(ServiceHelper.SRV_MTH_RES));
+
+						} else {
+							// just call back with an null object
+							onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
+									null);
 						}
 					}
 				}
@@ -179,6 +191,12 @@ public abstract class MActivityHC extends Activity {
 		super.onResume();
 		Log.v("MActivityHC", "onResume, registering " + getActivityId());
 		registerReceiver(serviceCallBackReceiver, new IntentFilter(getActivityId()));
+
+		if (listeningFragments != null) {
+			for (MFragmentHC fragment : listeningFragments) {
+				registerReceiver(serviceCallBackReceiver, new IntentFilter(fragment.getFragmentId()));
+			}
+		}
 
 	}
 

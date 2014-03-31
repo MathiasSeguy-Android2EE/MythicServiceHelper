@@ -59,9 +59,14 @@ public abstract class MActivityLeg extends Activity {
 	 */
 	public String getActivityId() {
 		// Make a log if the version is not compatible
+
 //		if (getResources().getBoolean(R.bool.postHC)) {
 //			Log.e("MActivityHC", getString(R.string.mactivity_version_exception));
 //		}
+
+		if (getResources().getBoolean(R.bool.postHC)) {
+			Log.e("MActivityLeg", getString(R.string.mactivity_version_exception));
+		}
 		// so use the canonical name it should be enough
 		return getClass().getCanonicalName();
 	}
@@ -112,7 +117,7 @@ public abstract class MActivityLeg extends Activity {
 				// using that type, retrieve the result object
 				// there will be a lot of case, should be the same case than the number of
 				// intent.get**Extra method
-				if (resType.equals(ServiceHelper.Parcelable)) {
+				if (resType != null && resType.equals(ServiceHelper.Parcelable)) {
 					// Parcelable case: It should be the case you use for your object (your POJO)
 					// You should implement Parcelable on all the business objects you want to be
 					// returned by the any services.
@@ -124,10 +129,14 @@ public abstract class MActivityLeg extends Activity {
 					// com.android2ee.formation.service.helper1.transverse.pojo.ConstantData
 					onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
 							intent.getParcelableExtra(ServiceHelper.SRV_MTH_RES));
-				} else if (resType.equals(ServiceHelper.SERIALIZABLE)) {
+				} else if (resType != null && resType.equals(ServiceHelper.SERIALIZABLE)) {
 					// serializable works too
 					onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
 							intent.getSerializableExtra(ServiceHelper.SRV_MTH_RES));
+				} else {
+					// just call back with an null object
+					onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
+							null);
 				}
 
 			}

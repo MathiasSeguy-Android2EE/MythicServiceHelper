@@ -29,8 +29,11 @@
  */
 package com.android2ee.formation.service.helper.lib.honeycomb;
 
+
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.os.Build;
 
 
 
@@ -46,6 +49,8 @@ import android.app.Fragment;
  *        
  *        TO BE USED ONLY BY NATIVE FRAGMENT (POST HONEYCOMB)
  */
+
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public abstract class MFragmentHC extends Fragment {
 
 	/**

@@ -101,13 +101,15 @@ public abstract class MFragmentActivity extends FragmentActivity {
 		public void onReceive(Context context, Intent intent) {
 			Log.d("MActivity", "serviceCallBackReceiver:onReceive, called: " + intent.getAction());
 			// first be sure to listen for the right intent
-			if (intent.getAction() == getActivityId()) {
+
+			if (intent.getAction().equals(getActivityId())) {
 				// retrieve the type of the result object
 				String resType = intent.getStringExtra(ServiceHelper.SRV_MTH_RES_TYPE);
 				// using that type, retrieve the result object
 				// there will be a lot of case, should be the same case than the number of
 				// intent.get**Extra method
-				if (resType.equals(ServiceHelper.Parcelable)) {
+
+				if (resType != null && resType.equals(ServiceHelper.Parcelable)) {
 					// Parcelable case: It should be the case you use for your object (your POJO)
 					// You should implement Parcelable on all the business objects you want to be
 					// returned by the any services.
@@ -119,15 +121,21 @@ public abstract class MFragmentActivity extends FragmentActivity {
 					// com.android2ee.formation.service.helper1.transverse.pojo.ConstantData
 					onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
 							intent.getParcelableExtra(ServiceHelper.SRV_MTH_RES));
-				} else if (resType.equals(ServiceHelper.SERIALIZABLE)) {
+
+				} else if (resType != null && resType.equals(ServiceHelper.SERIALIZABLE)) {
 					// serializable works too
 					onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
 							intent.getSerializableExtra(ServiceHelper.SRV_MTH_RES));
+				} else {
+					// just call back with an null object
+					onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
+							null);
 				}
 
 			} else {
 				for (MFragmentSup mFrag : listeningFragments) {
-					if (intent.getAction() == mFrag.getFragmentId()) {
+					if (intent.getAction().equals(mFrag.getFragmentId())) {
+
 						// retrieve the type of the result object
 						String resType = intent.getStringExtra(ServiceHelper.SRV_MTH_RES_TYPE);
 						// using that type, retrieve the result object
@@ -149,6 +157,11 @@ public abstract class MFragmentActivity extends FragmentActivity {
 							// serializable works too
 							mFrag.onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
 									intent.getSerializableExtra(ServiceHelper.SRV_MTH_RES));
+
+						} else {
+							// just call back with an null object
+							onServiceCallBack(intent.getIntExtra(ServiceHelper.SRV_MTH_ID, -1),
+									null);
 						}
 					}
 				}
@@ -169,6 +182,12 @@ public abstract class MFragmentActivity extends FragmentActivity {
 		super.onResume();
 		Log.v("MActivity", "onResume, registering " + getActivityId());
 		registerReceiver(serviceCallBackReceiver, new IntentFilter(getActivityId()));
+
+		if (listeningFragments != null) {
+			for (MFragmentSup fragment : listeningFragments) {
+				registerReceiver(serviceCallBackReceiver, new IntentFilter(fragment.getFragmentId()));
+			}
+		}
 	}
 
 	/*
